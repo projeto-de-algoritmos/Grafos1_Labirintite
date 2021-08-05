@@ -13,9 +13,11 @@ pygame.display.set_caption("Maze Generator")
 done = False
 
 clock = pygame.time.Clock()
+stack = []
 
-grid, goal = mg.generate()
-
+grid = mg.generate()
+finded = False
+current_cell = grid[0][0]
 # -------- Main Program Loop -----------
 while not done:
     # --- Main event loop
@@ -23,12 +25,35 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
     
+    current_cell.current = True
+    current_cell.visited = True
+
     for y in range(rows):
         for x in range(cols):
             grid[y][x].draw(screen)
 
-    grid[goal[1]][goal[0]].draw_food(screen)
-    
+    next_cells = current_cell.getNextCell()
+
+    if finded and len(stack):
+        current_cell.path = True
+        current_cell.current = False
+        current_cell = stack.pop()
+    elif len(next_cells) > 0:
+        current_cell.neighbors = []
+        
+        stack.append(current_cell)
+        
+        current_cell.current = False
+        
+        current_cell = next_cells[0]
+        if(next_cells[0].goal == True):
+            finded = True
+    elif len(stack) > 0:
+        current_cell.current = False
+        current_cell = stack.pop()
+
+    clock.tick(100)
     pygame.display.flip()
+    a = input()
 
 pygame.quit()

@@ -4,26 +4,32 @@ from Constantes import size, cols, rows, width
 
 WHITE = (255,255,255)
 GREY = (20,20,20)
+LIGHT_GREY = (200,200,200)
 BLACK = (0,0,0)
 PURPLE = (100,0,100)
+CIAN = (0, 255, 255)
 RED = (255,0,0)
 GREEN = (0, 255, 0)
 
+wall_size = 3
 class Cell():
     def __init__(self,x,y):
         global width
         self.x = x * width
         self.y = y * width
         
-        self.visited = False
+        self.created = False
         self.current = False
-        
+        self.goal = False
+        self.visited = False
+        self.path = False
+
         self.walls = [True,True,True,True] # top , right , bottom , left
         
         # neighbors
         self.neighbors = []
         
-        self.top = 0
+        self.top =  0
         self.right = 0
         self.bottom = 0
         self.left = 0
@@ -32,48 +38,46 @@ class Cell():
     
     def draw(self, screen):
         if self.current:
-            pygame.draw.rect(screen,RED,(self.x,self.y,width,width))
+            pygame.draw.rect(screen, RED,(self.x,self.y,width,width))
+        elif self.goal:
+            pygame.draw.rect(screen,GREEN,(self.x,self.y,width,width))
+        elif self.path:
+            pygame.draw.rect(screen,CIAN,(self.x,self.y,width,width))
         elif self.visited:
+            pygame.draw.rect(screen,LIGHT_GREY,(self.x,self.y,width,width))
+        elif self.created:
             pygame.draw.rect(screen,WHITE,(self.x,self.y,width,width))
-        
+        if self.created == True:
             if self.walls[0]:
-                pygame.draw.line(screen,BLACK,(self.x,self.y),((self.x + width),self.y),1) # top
+                pygame.draw.line(screen,BLACK,(self.x,self.y),((self.x + width),self.y),wall_size)
             if self.walls[1]:
-                pygame.draw.line(screen,BLACK,((self.x + width),self.y),((self.x + width),(self.y + width)),1) # right
+                pygame.draw.line(screen,BLACK,((self.x + width),self.y),((self.x + width),(self.y + width)),wall_size)
             if self.walls[2]:
-                pygame.draw.line(screen,BLACK,((self.x + width),(self.y + width)),(self.x,(self.y + width)),1) # bottom
+                pygame.draw.line(screen,BLACK,((self.x + width),(self.y + width)),(self.x,(self.y + width)),wall_size)
             if self.walls[3]:
-                pygame.draw.line(screen,BLACK,(self.x,(self.y + width)),(self.x,self.y),1) # left
-    
-    def draw_food(self, screen):
-        pygame.draw.rect(screen,GREEN,(self.x,self.y,width,width))
+                pygame.draw.line(screen,BLACK,(self.x,(self.y + width)),(self.x,self.y),wall_size)
 
     def checkNeighbors(self, grid):
-        #print("Top; y: " + str(int(self.y / width)) + ", y - 1: " + str(int(self.y / width) - 1))
         if int(self.y / width) - 1 >= 0:
             self.top = grid[int(self.y / width) - 1][int(self.x / width)]
-        #print("Right; x: " + str(int(self.x / width)) + ", x + 1: " + str(int(self.x / width) + 1))
         if int(self.x / width) + 1 <= cols - 1:
             self.right = grid[int(self.y / width)][int(self.x / width) + 1]
-        #print("Bottom; y: " + str(int(self.y / width)) + ", y + 1: " + str(int(self.y / width) + 1))
         if int(self.y / width) + 1 <= rows - 1:
             self.bottom = grid[int(self.y / width) + 1][int(self.x / width)]
-        #print("Left; x: " + str(int(self.x / width)) + ", x - 1: " + str(int(self.x / width) - 1))
         if int(self.x / width) - 1 >= 0:
             self.left = grid[int(self.y / width)][int(self.x / width) - 1]
-        #print("--------------------")
         
         if self.top != 0:
-            if self.top.visited == False:
+            if self.top.created == False:
                 self.neighbors.append(self.top)
         if self.right != 0:
-            if self.right.visited == False:
+            if self.right.created == False:
                 self.neighbors.append(self.right)
         if self.bottom != 0:
-            if self.bottom.visited == False:
+            if self.bottom.created == False:
                 self.neighbors.append(self.bottom)
         if self.left != 0:
-            if self.left.visited == False:
+            if self.left.created == False:
                 self.neighbors.append(self.left)
         
         if len(self.neighbors) > 0:
@@ -81,6 +85,19 @@ class Cell():
             return self.next_cell
         else:
             return False
+
+    def getNextCell(self):
+        available = []
+        if self.top != 0 and self.top.visited == False and not self.walls[0]:
+            available.append(self.top)
+        if self.right != 0 and self.right.visited == False and not self.walls[1]:
+            available.append(self.right)
+        if self.bottom != 0 and self.bottom.visited == False and not self.walls[2]:
+            available.append(self.bottom)
+        if self.left != 0 and self.left.visited == False and not self.walls[3]:
+            available.append(self.left)
+        return available
+
 
 def removeWalls(current_cell,next_cell):
     x = int(current_cell.x / width) - int(next_cell.x / width)

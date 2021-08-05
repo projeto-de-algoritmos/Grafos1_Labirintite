@@ -36,16 +36,18 @@ def generate():
         
 
         screen.fill(GREY)
-        
-        current_cell.visited = True
+
+        current_cell.created = True
         current_cell.current = True
-        
+
         for y in range(rows):
             for x in range(cols):
                 grid[y][x].draw(screen)
         
         next_cell = current_cell.checkNeighbors(grid)
         
+
+
         if next_cell != False:
             current_cell.neighbors = []
             
@@ -62,7 +64,9 @@ def generate():
             current_cell = stack.pop()
             
         elif len(stack) == 0:
-            return (grid, goal)
+            grid[goal[1]][goal[0]].goal = True
+            return grid
         
+        #clock.tick(60)
         pygame.display.flip()
 
