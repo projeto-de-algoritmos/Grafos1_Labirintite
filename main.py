@@ -1,8 +1,11 @@
 import random
 import pygame
+import queue
 from Constantes import size, cols, rows, width, GREY
 from Cell import Cell, removeWalls
 import maze_generator as mg
+
+opt = int(input("1- DFS \n2- BFS\n"))
 
 pygame.init()
 
@@ -14,8 +17,11 @@ done = False
 
 clock = pygame.time.Clock()
 stack = []
+queue = queue.Queue()
 
 grid = mg.generate()
+grid[0][0].caller = grid[0][0]
+
 finded = False
 current_cell = grid[0][0]
 # -------- Main Program Loop -----------
@@ -27,6 +33,8 @@ while not done:
     
     current_cell.current = True
     current_cell.visited = True
+    if(current_cell.goal == True):
+        finded = True
 
     for y in range(rows):
         for x in range(cols):
@@ -34,23 +42,35 @@ while not done:
 
     next_cells = current_cell.getNextCell()
 
-    if finded and len(stack):
-        current_cell.path = True
-        current_cell.current = False
-        current_cell = stack.pop()
-    elif len(next_cells) > 0:
-        current_cell.neighbors = []
-        
-        stack.append(current_cell)
-        
-        current_cell.current = False
-        
-        current_cell = next_cells[0]
-        if(next_cells[0].goal == True):
-            finded = True
-    elif len(stack) > 0:
-        current_cell.current = False
-        current_cell = stack.pop()
+    if opt == 1:
+        if finded and len(stack):
+            current_cell.path = True
+            current_cell.current = False
+            current_cell = stack.pop()
+        elif len(next_cells) > 0:
+            current_cell.neighbors = []
+            
+            stack.append(current_cell)
+            
+            current_cell.current = False
+            
+            current_cell = next_cells[0]
+        elif len(stack) > 0:
+            current_cell.current = False
+            current_cell = stack.pop()
+    elif opt == 2:
+        for cell in next_cells:
+            cell.queued = True
+            cell.caller = current_cell
+            queue.put(cell)
+
+        if finded:
+            current_cell.path = True
+            current_cell.current = False
+            current_cell = current_cell.caller
+        elif queue.qsize() > 0:
+            current_cell.current = False
+            current_cell = queue.get()
 
     clock.tick(100)
     pygame.display.flip()

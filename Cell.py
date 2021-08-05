@@ -5,6 +5,7 @@ from Constantes import size, cols, rows, width
 WHITE = (255,255,255)
 GREY = (20,20,20)
 LIGHT_GREY = (200,200,200)
+LIGHT_PINK = (219, 144, 235)
 BLACK = (0,0,0)
 PURPLE = (100,0,100)
 CIAN = (0, 255, 255)
@@ -23,6 +24,8 @@ class Cell():
         self.goal = False
         self.visited = False
         self.path = False
+        self.queued = False
+        self.caller = None
 
         self.walls = [True,True,True,True] # top , right , bottom , left
         
@@ -45,6 +48,8 @@ class Cell():
             pygame.draw.rect(screen,CIAN,(self.x,self.y,width,width))
         elif self.visited:
             pygame.draw.rect(screen,LIGHT_GREY,(self.x,self.y,width,width))
+        elif self.queued:
+            pygame.draw.rect(screen,LIGHT_PINK,(self.x,self.y,width,width))
         elif self.created:
             pygame.draw.rect(screen,WHITE,(self.x,self.y,width,width))
         if self.created == True:
