@@ -2,6 +2,7 @@ import random
 import pygame
 from Constantes import size, cols, rows, width, GREY
 from Cell import Cell, removeWalls
+import Theme
 
 def generate():
 
@@ -34,8 +35,7 @@ def generate():
             if event.type == pygame.QUIT:
                 done = True
         
-
-        screen.fill(GREY)
+        screen.fill(Theme.get_colors().filler)
 
         current_cell.created = True
         current_cell.current = True

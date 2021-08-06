@@ -1,18 +1,11 @@
 import random
 import pygame
 from Constantes import size, cols, rows, width
+import Theme
 
-WHITE = (255,255,255)
-GREY = (20,20,20)
-LIGHT_GREY = (200,200,200)
-LIGHT_PINK = (219, 144, 235)
-BLACK = (0,0,0)
-PURPLE = (100,0,100)
-CIAN = (0, 255, 255)
-RED = (255,0,0)
-GREEN = (0, 255, 0)
-
+colors = Theme.get_colors()
 wall_size = 3
+
 class Cell():
     def __init__(self,x,y):
         global width
@@ -41,26 +34,26 @@ class Cell():
     
     def draw(self, screen):
         if self.current:
-            pygame.draw.rect(screen, RED,(self.x,self.y,width,width))
+            pygame.draw.rect(screen, colors.character,(self.x,self.y,width,width))
         elif self.goal:
-            pygame.draw.rect(screen,GREEN,(self.x,self.y,width,width))
+            pygame.draw.rect(screen, colors.goal,(self.x,self.y,width,width))
         elif self.path:
-            pygame.draw.rect(screen,CIAN,(self.x,self.y,width,width))
+            pygame.draw.rect(screen, colors.path,(self.x,self.y,width,width))
         elif self.visited:
-            pygame.draw.rect(screen,LIGHT_GREY,(self.x,self.y,width,width))
+            pygame.draw.rect(screen, colors.visited,(self.x,self.y,width,width))
         elif self.queued:
-            pygame.draw.rect(screen,LIGHT_PINK,(self.x,self.y,width,width))
+            pygame.draw.rect(screen, colors.queued,(self.x,self.y,width,width))
         elif self.created:
-            pygame.draw.rect(screen,WHITE,(self.x,self.y,width,width))
+            pygame.draw.rect(screen, colors.created,(self.x,self.y,width,width))
         if self.created == True:
             if self.walls[0]:
-                pygame.draw.line(screen,BLACK,(self.x,self.y),((self.x + width),self.y),wall_size)
+                pygame.draw.line(screen, colors.wall,(self.x,self.y),((self.x + width),self.y),wall_size)
             if self.walls[1]:
-                pygame.draw.line(screen,BLACK,((self.x + width),self.y),((self.x + width),(self.y + width)),wall_size)
+                pygame.draw.line(screen, colors.wall,((self.x + width),self.y),((self.x + width),(self.y + width)),wall_size)
             if self.walls[2]:
-                pygame.draw.line(screen,BLACK,((self.x + width),(self.y + width)),(self.x,(self.y + width)),wall_size)
+                pygame.draw.line(screen, colors.wall,((self.x + width),(self.y + width)),(self.x,(self.y + width)),wall_size)
             if self.walls[3]:
-                pygame.draw.line(screen,BLACK,(self.x,(self.y + width)),(self.x,self.y),wall_size)
+                pygame.draw.line(screen, colors.wall,(self.x,(self.y + width)),(self.x,self.y),wall_size)
 
     def checkNeighbors(self, grid):
         if int(self.y / width) - 1 >= 0:
@@ -119,3 +112,7 @@ def removeWalls(current_cell,next_cell):
     elif y == 1: # top of current
         current_cell.walls[0] = False
         next_cell.walls[2] = False
+
+def reload_colors():
+    global colors
+    colors = Theme.get_colors()

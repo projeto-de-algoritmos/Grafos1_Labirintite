@@ -1,0 +1,43 @@
+{
+	"all_colors": [
+		{
+		"theme_name": "Default",
+		"colors": {
+			"created": [255,255,255],
+			"filler": [20,20,20],
+			"visited": [200,200,200],
+			"wall": [0,0,0],
+			"queued": [219, 144, 235],
+			"path": [0,255,255],
+			"character": [255,0,0],
+			"goal": [0,255,0]
+			}
+		},
+		{
+		"theme_name": "Dark",
+		"colors": {
+			"created": [20, 20, 20],
+			"filler": [255, 255, 255],
+			"visited": [230,230,230],
+			"queued": [166, 0, 255],
+			"wall": [0,127,0],
+			"path": [200,105,105],
+			"character": [255,0,0],
+			"goal": [0,255,0]
+			}
+		},
+		{
+		"theme_name": "Gray",
+		"colors": {
+			"created": [255, 255, 255],
+			"filler": [20, 20, 20],
+			"visited": [210,210,210],
+			"queued": [60, 60, 60],
+			"wall": [0,0,0],
+			"path": [159,159,159],
+			"character": [120,120,120],
+			"goal": [0,0,0]
+			}
+		}
+	]
+}

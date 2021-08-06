@@ -1,3 +1,5 @@
+import json
+
 size = (701,701)
 width = 25
 cols = int(size[0] / width)

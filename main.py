@@ -2,10 +2,20 @@ import random
 import pygame
 import queue
 from Constantes import size, cols, rows, width, GREY
-from Cell import Cell, removeWalls
+import Theme
 import maze_generator as mg
+from Cell import Cell, removeWalls, reload_colors
+from importlib import reload
 
-opt = int(input("1- DFS \n2- BFS\n"))
+opt = 0
+while opt > 2 or opt < 1:
+    opt = int(input("1- DFS \n2- BFS\n"))
+    if opt == 3:
+        new_theme = Theme.next_theme()
+        reload_colors()
+        print("\nTema definido para:", new_theme)
+
+
 
 pygame.init()
 
